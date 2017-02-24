@@ -45,7 +45,7 @@ public class MyPanel extends ScrollView {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         Timber.d("events   " + ev.getY());
-        if (content.onTouchEvent(ev)){
+        if (content.dispatchTouchEvent(ev)){
             return true;
         }
 
