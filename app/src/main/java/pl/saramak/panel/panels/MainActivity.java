@@ -7,16 +7,15 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.saramak.panel.panels.direction.DirectionDetector;
+import pl.saramak.panel.panels.direction.SimpleDirectionDetector;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,16 +39,30 @@ public class MainActivity extends AppCompatActivity {
         this.content = (LinearLayout)findViewById(R.id.content);
         panel.setContent(this.content);
 
+
+        final DirectionDetector directionDetector = new SimpleDirectionDetector();
+        final BordersHandlerDir bordersHandlerWithDir = BordersHandlerDir.of(directionDetector, 100, 300, 1000, 1500);
+
         panel.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if (event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                     LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) panelContent.getLayoutParams();
-                    params.height = (int) event.getY();
+                    int lastY = (int) event.getY();
+                    directionDetector.eventY(lastY);
+                    params.height = lastY;
+
                     Timber.d("New height " + params.height);
                     panelContent.setLayoutParams(params);
 
+                }
+                if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                    int newPoint = (int) event.getY();
+                    int close =  bordersHandlerWithDir.findClosest(newPoint);
+                    ResizeAnimation ra = new ResizeAnimation(panelContent, close);
+                    ra.setDuration(500);
+                    panelContent.startAnimation(ra);
                 }
                 return true;
             }

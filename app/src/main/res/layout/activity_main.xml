@@ -31,6 +31,7 @@
         </LinearLayout>
          <pl.saramak.panel.panels.MyPanel
                 android:id="@+id/topPanelSlight"
+             android:animateLayoutChanges="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
 
@@ -42,6 +43,7 @@
                     android:layout_height="wrap_content">
                 <ListView
                     android:id="@+id/panel_content"
+                    android:animateLayoutChanges="true"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/holo_blue_light"
